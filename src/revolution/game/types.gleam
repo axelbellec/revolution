@@ -1,5 +1,4 @@
 /// Core game types for Revolution card game
-
 import gleam/dict.{type Dict}
 import gleam/option.{type Option}
 import gleam/order.{type Order}
@@ -89,12 +88,7 @@ pub type Player {
 
 /// Card exchange requirement between roles
 pub type Exchange {
-  Exchange(
-    from_role: Role,
-    to_role: Role,
-    count: Int,
-    quality: ExchangeQuality,
-  )
+  Exchange(from_role: Role, to_role: Role, count: Int, quality: ExchangeQuality)
 }
 
 /// Quality of cards to exchange

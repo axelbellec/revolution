@@ -1,5 +1,4 @@
 /// Role assignment algorithm based on finishing order and player count
-
 import gleam/dict.{type Dict}
 import gleam/list
 import gleam/option.{None, Some}
@@ -26,7 +25,9 @@ pub fn assign_roles(
 }
 
 /// 3 players: Top, Middle, Bottom
-fn assign_roles_3_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Role) {
+fn assign_roles_3_players(
+  finishing_order: List(PlayerId),
+) -> Dict(PlayerId, Role) {
   case finishing_order {
     [first, second, third] ->
       dict.new()
@@ -38,7 +39,9 @@ fn assign_roles_3_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Rol
 }
 
 /// 4 players: Top, Middle, Middle, Bottom
-fn assign_roles_4_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Role) {
+fn assign_roles_4_players(
+  finishing_order: List(PlayerId),
+) -> Dict(PlayerId, Role) {
   case finishing_order {
     [first, second, third, fourth] ->
       dict.new()
@@ -51,7 +54,9 @@ fn assign_roles_4_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Rol
 }
 
 /// 5 players: Top, Second, Middle, Fourth, Bottom
-fn assign_roles_5_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Role) {
+fn assign_roles_5_players(
+  finishing_order: List(PlayerId),
+) -> Dict(PlayerId, Role) {
   case finishing_order {
     [first, second, third, fourth, fifth] ->
       dict.new()
@@ -65,7 +70,9 @@ fn assign_roles_5_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Rol
 }
 
 /// 6 players: Top, Second, Middle, Middle, Fourth, Bottom
-fn assign_roles_6_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Role) {
+fn assign_roles_6_players(
+  finishing_order: List(PlayerId),
+) -> Dict(PlayerId, Role) {
   case finishing_order {
     [first, second, third, fourth, fifth, sixth] ->
       dict.new()

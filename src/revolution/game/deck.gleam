@@ -1,20 +1,17 @@
 /// Card deck operations: creation, shuffling, dealing
-
 import gleam/int
 import gleam/list
 import gleam/order
 import gleam/result
 import revolution/game/types.{
-  type Card, type Player, type Rank, Ace, Card, Clubs, Diamonds,
-  Eight, Five, Four, Hearts, Jack, King, Nine, Queen, Seven, Six, Spades, Ten,
-  Three, Two,
+  type Card, type Player, type Rank, Ace, Card, Clubs, Diamonds, Eight, Five,
+  Four, Hearts, Jack, King, Nine, Queen, Seven, Six, Spades, Ten, Three, Two,
 }
 
 /// Create a standard 52-card deck
 pub fn create_deck() -> List(Card) {
   let ranks = [
-    Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace,
-    Two,
+    Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace, Two,
   ]
   let suits = [Hearts, Diamonds, Clubs, Spades]
 
@@ -51,7 +48,9 @@ fn shuffle_helper(
 
 // Linear Congruential Generator constants (Numerical Recipes)
 const lcg_multiplier = 1_103_515_245
+
 const lcg_increment = 12_345
+
 const lcg_modulus = 2_147_483_647
 
 /// Simple pseudo-random number generator for deterministic shuffling
@@ -61,10 +60,7 @@ fn simple_random(seed: Int, max: Int) -> Int {
 }
 
 /// Take element at index and return it with the remaining list
-fn list_take_at(
-  lst: List(a),
-  index: Int,
-) -> Result(#(a, List(a)), Nil) {
+fn list_take_at(lst: List(a), index: Int) -> Result(#(a, List(a)), Nil) {
   case index {
     0 ->
       case lst {
@@ -184,11 +180,7 @@ fn unique_helper(cards: List(Card), acc: List(Card)) -> List(Card) {
 pub fn validate_deck_size(deck: List(Card)) -> Result(Nil, String) {
   case list.length(deck) {
     52 -> Ok(Nil)
-    n ->
-      Error(
-        "Invalid deck size: expected 52 cards, got "
-        <> int.to_string(n),
-      )
+    n -> Error("Invalid deck size: expected 52 cards, got " <> int.to_string(n))
   }
 }
 

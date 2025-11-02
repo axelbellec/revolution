@@ -1,5 +1,4 @@
 /// Play validation and exchange validation rules
-
 import gleam/int
 import gleam/list
 import gleam/option.{type Option}
@@ -60,7 +59,13 @@ fn validate_play_rank(
           // Compare ranks
           case cards, last.cards {
             [new_card, ..], [last_card, ..] -> {
-              case game_types.compare_rank(new_card.rank, last_card.rank, revolution_active) {
+              case
+                game_types.compare_rank(
+                  new_card.rank,
+                  last_card.rank,
+                  revolution_active,
+                )
+              {
                 Gt -> Ok(Nil)
                 Eq -> Error(InvalidPlay("Must play higher rank than last play"))
                 Lt -> Error(InvalidPlay("Must play higher rank than last play"))
@@ -159,9 +164,7 @@ fn format_ranks(cards: List(game_types.Card)) -> String {
     [] -> ""
     [card] -> game_types.rank_to_string(card.rank)
     [first, ..rest] ->
-      game_types.rank_to_string(first.rank)
-      <> ", "
-      <> format_ranks(rest)
+      game_types.rank_to_string(first.rank) <> ", " <> format_ranks(rest)
   }
 }
 

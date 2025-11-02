@@ -83,7 +83,8 @@ pub fn add_multiple_players_test() {
 pub fn add_player_when_full_fails_test() {
   let game_id = id.game_id("game1")
   let host_id = id.player_id("host")
-  let config = game_types.GameConfig(..game_types.default_config(), max_players: 2)
+  let config =
+    game_types.GameConfig(..game_types.default_config(), max_players: 2)
   let game = engine.create_game(game_id, host_id, config, 1_000_000)
 
   let result =
@@ -177,7 +178,12 @@ pub fn play_cards_test() {
           case current_player.hand {
             [card, ..] -> {
               case
-                engine.play_cards(started_game, current_player.id, [card], 1_000_000)
+                engine.play_cards(
+                  started_game,
+                  current_player.id,
+                  [card],
+                  1_000_000,
+                )
               {
                 Ok(after_play) -> {
                   // Player hand should have one less card
@@ -258,13 +264,20 @@ pub fn pass_turn_test() {
           case first_player.hand {
             [card, ..] -> {
               case
-                engine.play_cards(started_game, first_player.id, [card], 1_000_000)
+                engine.play_cards(
+                  started_game,
+                  first_player.id,
+                  [card],
+                  1_000_000,
+                )
               {
                 Ok(after_first_play) -> {
                   // Second player passes
                   case get_player_at(after_first_play.players, 1) {
                     Ok(second_player) -> {
-                      case engine.pass_turn(after_first_play, second_player.id) {
+                      case
+                        engine.pass_turn(after_first_play, second_player.id)
+                      {
                         Ok(after_pass) -> {
                           // Second player should be marked as passed
                           case get_player_at(after_pass.players, 1) {

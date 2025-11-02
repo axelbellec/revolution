@@ -1,5 +1,4 @@
 /// Error types and severity classification for the Revolution game
-
 import gleam/int
 import revolution/utils/id.{type PlayerId}
 

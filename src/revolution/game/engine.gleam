@@ -12,9 +12,9 @@ import revolution/game/deck
 import revolution/game/rules
 import revolution/game/scoring
 import revolution/game/types.{
-  type Card, type GameConfig, type GamePhase, type Player, BottomRole,
-  Connected, FourthRole, GameOver, GameState, PendingExchange, Player, Playing,
-  RoundOver, SecondRole, TopRole, WaitingForPlayers,
+  type Card, type GameConfig, type GamePhase, type Player, BottomRole, Connected,
+  FourthRole, GameOver, GameState, PendingExchange, Player, Playing, RoundOver,
+  SecondRole, TopRole, WaitingForPlayers,
 } as game_types
 import revolution/utils/id.{type PlayerId}
 
@@ -76,7 +76,10 @@ pub fn add_player(
 }
 
 /// Start the game (deal cards, begin first round)
-pub fn start_game(state: game_types.GameState, seed: Int) -> Result(game_types.GameState, GameError) {
+pub fn start_game(
+  state: game_types.GameState,
+  seed: Int,
+) -> Result(game_types.GameState, GameError) {
   case state.phase {
     WaitingForPlayers -> {
       let player_count = list.length(state.players)
@@ -286,8 +289,7 @@ pub fn pass_turn(
 
               result.try(rules.can_pass(is_starting_trick), fn(_) {
                 // Mark player as passed
-                let updated_player =
-                  Player(..current_player, has_passed: True)
+                let updated_player = Player(..current_player, has_passed: True)
 
                 let updated_players =
                   replace_player(state.players, updated_player)
@@ -361,7 +363,8 @@ pub fn start_next_round(
             })
 
           // Find TopRole's index (winner from previous round starts)
-          let president_index = find_player_with_role_index(reset_players, TopRole)
+          let president_index =
+            find_player_with_role_index(reset_players, TopRole)
 
           // Determine if we need card exchange phase
           case scoring.has_vice_roles(player_count) {
@@ -409,13 +412,18 @@ pub fn start_next_round(
 
 // Helper functions
 
-fn get_current_player(state: game_types.GameState) -> Result(game_types.Player, Nil) {
+fn get_current_player(
+  state: game_types.GameState,
+) -> Result(game_types.Player, Nil) {
   state.players
   |> list.drop(state.current_player_index)
   |> list.first
 }
 
-fn replace_player(players: List(game_types.Player), updated: game_types.Player) -> List(game_types.Player) {
+fn replace_player(
+  players: List(game_types.Player),
+  updated: game_types.Player,
+) -> List(game_types.Player) {
   list.map(players, fn(p) {
     case id.player_id_eq(p.id, updated.id) {
       True -> updated
@@ -424,7 +432,10 @@ fn replace_player(players: List(game_types.Player), updated: game_types.Player) 
   })
 }
 
-fn get_next_player_index(state: game_types.GameState, players: List(game_types.Player)) -> Int {
+fn get_next_player_index(
+  state: game_types.GameState,
+  players: List(game_types.Player),
+) -> Int {
   let player_count = list.length(players)
   { state.current_player_index + 1 } % player_count
 }
@@ -522,18 +533,24 @@ fn find_last_player_who_played(state: game_types.GameState) -> Int {
   case state.last_play {
     Some(play) -> {
       // Find the index of the player who made the last play
-      list.index_fold(state.players, state.current_player_index, fn(acc, p, idx) {
-        case id.player_id_eq(p.id, play.player_id) {
-          True -> idx
-          False -> acc
-        }
-      })
+      list.index_fold(
+        state.players,
+        state.current_player_index,
+        fn(acc, p, idx) {
+          case id.player_id_eq(p.id, play.player_id) {
+            True -> idx
+            False -> acc
+          }
+        },
+      )
     }
     None -> state.current_player_index
   }
 }
 
-fn create_pending_exchanges(players: List(game_types.Player)) -> List(game_types.PendingExchange) {
+fn create_pending_exchanges(
+  players: List(game_types.Player),
+) -> List(game_types.PendingExchange) {
   // Find TopRole, SecondRole, FourthRole, BottomRole
   let top_role = list.find(players, fn(p) { p.role == Some(TopRole) })
   let second_role = list.find(players, fn(p) { p.role == Some(SecondRole) })
@@ -577,7 +594,9 @@ fn find_player_with_role_index(
 
 /// Validate card conservation invariant (52 cards total)
 /// This ensures no cards are lost or duplicated during gameplay
-pub fn validate_card_conservation(state: game_types.GameState) -> Result(Nil, String) {
+pub fn validate_card_conservation(
+  state: game_types.GameState,
+) -> Result(Nil, String) {
   let cards_in_hands =
     list.fold(state.players, 0, fn(acc, p) { acc + list.length(p.hand) })
 

@@ -1,6 +1,5 @@
 /// Opaque ID types for type safety
 /// Prevents mixing up different ID types at compile time
-
 /// Opaque player identifier - cannot be confused with game IDs
 pub opaque type PlayerId {
   PlayerId(String)

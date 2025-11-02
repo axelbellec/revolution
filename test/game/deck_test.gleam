@@ -183,7 +183,11 @@ pub fn remove_cards_test() {
 }
 
 pub fn sort_by_rank_normal_test() {
-  let cards = [Card(Three, Hearts), Card(Seven, Spades), Card(types.Ace, types.Clubs)]
+  let cards = [
+    Card(Three, Hearts),
+    Card(Seven, Spades),
+    Card(types.Ace, types.Clubs),
+  ]
 
   let sorted = deck.sort_by_rank(cards, False)
 
@@ -204,7 +208,11 @@ pub fn sort_by_rank_normal_test() {
 }
 
 pub fn sort_by_rank_revolution_test() {
-  let cards = [Card(Three, Hearts), Card(Seven, Spades), Card(types.Ace, types.Clubs)]
+  let cards = [
+    Card(Three, Hearts),
+    Card(Seven, Spades),
+    Card(types.Ace, types.Clubs),
+  ]
 
   let sorted = deck.sort_by_rank(cards, True)
 
