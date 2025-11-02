@@ -12,9 +12,9 @@ import revolution/game/deck
 import revolution/game/rules
 import revolution/game/scoring
 import revolution/game/types.{
-  type Card, type GameConfig, type GamePhase, type Player,
-  Connected, GameOver, GameState, PendingExchange, Player, Playing,
-  President, RoundOver, Trouduc, VicePresident, ViceTrouduc, WaitingForPlayers,
+  type Card, type GameConfig, type GamePhase, type Player, BottomRole,
+  Connected, FourthRole, GameOver, GameState, PendingExchange, Player, Playing,
+  RoundOver, SecondRole, TopRole, WaitingForPlayers,
 } as game_types
 import revolution/utils/id.{type PlayerId}
 
@@ -360,8 +360,8 @@ pub fn start_next_round(
               Player(..p, has_passed: False, finished_position: None)
             })
 
-          // Find President's index (winner from previous round starts)
-          let president_index = find_player_with_role_index(reset_players, President)
+          // Find TopRole's index (winner from previous round starts)
+          let president_index = find_player_with_role_index(reset_players, TopRole)
 
           // Determine if we need card exchange phase
           case scoring.has_vice_roles(player_count) {
@@ -534,27 +534,27 @@ fn find_last_player_who_played(state: game_types.GameState) -> Int {
 }
 
 fn create_pending_exchanges(players: List(game_types.Player)) -> List(game_types.PendingExchange) {
-  // Find President, VP, VT, Trouduc
-  let president = list.find(players, fn(p) { p.role == Some(President) })
-  let vp = list.find(players, fn(p) { p.role == Some(VicePresident) })
-  let vt = list.find(players, fn(p) { p.role == Some(ViceTrouduc) })
-  let trouduc = list.find(players, fn(p) { p.role == Some(Trouduc) })
+  // Find TopRole, SecondRole, FourthRole, BottomRole
+  let top_role = list.find(players, fn(p) { p.role == Some(TopRole) })
+  let second_role = list.find(players, fn(p) { p.role == Some(SecondRole) })
+  let fourth_role = list.find(players, fn(p) { p.role == Some(FourthRole) })
+  let bottom_role = list.find(players, fn(p) { p.role == Some(BottomRole) })
 
   let mut_exchanges = []
 
-  // Trouduc -> President (2 cards)
-  let mut_exchanges = case president, trouduc {
-    Ok(pres), Ok(trou) -> [
-      PendingExchange(trou.id, pres.id, 2, game_types.Best, False),
+  // BottomRole -> TopRole (2 cards)
+  let mut_exchanges = case top_role, bottom_role {
+    Ok(top), Ok(bottom) -> [
+      PendingExchange(bottom.id, top.id, 2, game_types.Best, False),
       ..mut_exchanges
     ]
     _, _ -> mut_exchanges
   }
 
-  // ViceTrouduc -> VicePresident (1 card)
-  let mut_exchanges = case vp, vt {
-    Ok(vice_pres), Ok(vice_trou) -> [
-      PendingExchange(vice_trou.id, vice_pres.id, 1, game_types.Best, False),
+  // FourthRole -> SecondRole (1 card)
+  let mut_exchanges = case second_role, fourth_role {
+    Ok(second), Ok(fourth) -> [
+      PendingExchange(fourth.id, second.id, 1, game_types.Best, False),
       ..mut_exchanges
     ]
     _, _ -> mut_exchanges

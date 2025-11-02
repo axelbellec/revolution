@@ -3,7 +3,7 @@ import gleam/order
 import gleeunit/should
 import revolution/game/scoring
 import revolution/game/types.{
-  Neutral, President, Trouduc, VicePresident, ViceTrouduc,
+  BottomRole, FourthRole, MiddleRole, SecondRole, TopRole,
 }
 import revolution/utils/id
 
@@ -16,17 +16,17 @@ pub fn assign_roles_3_players_test() {
 
   let roles = scoring.assign_roles(finishing_order, 3)
 
-  // Alice (1st) should be President
+  // Alice (1st) should be TopRole
   dict.get(roles, id.player_id("alice"))
-  |> should.equal(Ok(President))
+  |> should.equal(Ok(TopRole))
 
-  // Bob (2nd) should be Neutral
+  // Bob (2nd) should be MiddleRole
   dict.get(roles, id.player_id("bob"))
-  |> should.equal(Ok(Neutral))
+  |> should.equal(Ok(MiddleRole))
 
-  // Carol (3rd) should be Trouduc
+  // Carol (3rd) should be BottomRole
   dict.get(roles, id.player_id("carol"))
-  |> should.equal(Ok(Trouduc))
+  |> should.equal(Ok(BottomRole))
 }
 
 pub fn assign_roles_4_players_test() {
@@ -39,21 +39,21 @@ pub fn assign_roles_4_players_test() {
 
   let roles = scoring.assign_roles(finishing_order, 4)
 
-  // Alice (1st) should be President
+  // Alice (1st) should be TopRole
   dict.get(roles, id.player_id("alice"))
-  |> should.equal(Ok(President))
+  |> should.equal(Ok(TopRole))
 
-  // Bob (2nd) should be Neutral
+  // Bob (2nd) should be MiddleRole
   dict.get(roles, id.player_id("bob"))
-  |> should.equal(Ok(Neutral))
+  |> should.equal(Ok(MiddleRole))
 
-  // Carol (3rd) should be Neutral
+  // Carol (3rd) should be MiddleRole
   dict.get(roles, id.player_id("carol"))
-  |> should.equal(Ok(Neutral))
+  |> should.equal(Ok(MiddleRole))
 
-  // Dave (4th) should be Trouduc
+  // Dave (4th) should be BottomRole
   dict.get(roles, id.player_id("dave"))
-  |> should.equal(Ok(Trouduc))
+  |> should.equal(Ok(BottomRole))
 }
 
 pub fn assign_roles_5_players_test() {
@@ -67,25 +67,25 @@ pub fn assign_roles_5_players_test() {
 
   let roles = scoring.assign_roles(finishing_order, 5)
 
-  // Alice (1st) -> President
+  // Alice (1st) -> TopRole
   dict.get(roles, id.player_id("alice"))
-  |> should.equal(Ok(President))
+  |> should.equal(Ok(TopRole))
 
-  // Bob (2nd) -> Vice-President
+  // Bob (2nd) -> SecondRole
   dict.get(roles, id.player_id("bob"))
-  |> should.equal(Ok(VicePresident))
+  |> should.equal(Ok(SecondRole))
 
-  // Carol (3rd) -> Neutral
+  // Carol (3rd) -> MiddleRole
   dict.get(roles, id.player_id("carol"))
-  |> should.equal(Ok(Neutral))
+  |> should.equal(Ok(MiddleRole))
 
-  // Dave (4th) -> Vice-Trouduc
+  // Dave (4th) -> FourthRole
   dict.get(roles, id.player_id("dave"))
-  |> should.equal(Ok(ViceTrouduc))
+  |> should.equal(Ok(FourthRole))
 
-  // Eve (5th) -> Trouduc
+  // Eve (5th) -> BottomRole
   dict.get(roles, id.player_id("eve"))
-  |> should.equal(Ok(Trouduc))
+  |> should.equal(Ok(BottomRole))
 }
 
 pub fn assign_roles_6_players_test() {
@@ -100,84 +100,84 @@ pub fn assign_roles_6_players_test() {
 
   let roles = scoring.assign_roles(finishing_order, 6)
 
-  // Alice (1st) -> President
+  // Alice (1st) -> TopRole
   dict.get(roles, id.player_id("alice"))
-  |> should.equal(Ok(President))
+  |> should.equal(Ok(TopRole))
 
-  // Bob (2nd) -> Vice-President
+  // Bob (2nd) -> SecondRole
   dict.get(roles, id.player_id("bob"))
-  |> should.equal(Ok(VicePresident))
+  |> should.equal(Ok(SecondRole))
 
-  // Carol (3rd) -> Neutral
+  // Carol (3rd) -> MiddleRole
   dict.get(roles, id.player_id("carol"))
-  |> should.equal(Ok(Neutral))
+  |> should.equal(Ok(MiddleRole))
 
-  // Dave (4th) -> Neutral
+  // Dave (4th) -> MiddleRole
   dict.get(roles, id.player_id("dave"))
-  |> should.equal(Ok(Neutral))
+  |> should.equal(Ok(MiddleRole))
 
-  // Eve (5th) -> Vice-Trouduc
+  // Eve (5th) -> FourthRole
   dict.get(roles, id.player_id("eve"))
-  |> should.equal(Ok(ViceTrouduc))
+  |> should.equal(Ok(FourthRole))
 
-  // Frank (6th) -> Trouduc
+  // Frank (6th) -> BottomRole
   dict.get(roles, id.player_id("frank"))
-  |> should.equal(Ok(Trouduc))
+  |> should.equal(Ok(BottomRole))
 }
 
 pub fn should_give_cards_test() {
-  scoring.should_give_cards(Trouduc)
+  scoring.should_give_cards(BottomRole)
   |> should.be_true
 
-  scoring.should_give_cards(ViceTrouduc)
+  scoring.should_give_cards(FourthRole)
   |> should.be_true
 
-  scoring.should_give_cards(President)
+  scoring.should_give_cards(TopRole)
   |> should.be_false
 
-  scoring.should_give_cards(Neutral)
+  scoring.should_give_cards(MiddleRole)
   |> should.be_false
 }
 
 pub fn should_receive_cards_test() {
-  scoring.should_receive_cards(President)
+  scoring.should_receive_cards(TopRole)
   |> should.be_true
 
-  scoring.should_receive_cards(VicePresident)
+  scoring.should_receive_cards(SecondRole)
   |> should.be_true
 
-  scoring.should_receive_cards(Trouduc)
+  scoring.should_receive_cards(BottomRole)
   |> should.be_false
 
-  scoring.should_receive_cards(Neutral)
+  scoring.should_receive_cards(MiddleRole)
   |> should.be_false
 }
 
 pub fn get_exchange_target_test() {
-  scoring.get_exchange_target(Trouduc)
-  |> should.equal(Ok(President))
+  scoring.get_exchange_target(BottomRole)
+  |> should.equal(Ok(TopRole))
 
-  scoring.get_exchange_target(ViceTrouduc)
-  |> should.equal(Ok(VicePresident))
+  scoring.get_exchange_target(FourthRole)
+  |> should.equal(Ok(SecondRole))
 
-  scoring.get_exchange_target(Neutral)
+  scoring.get_exchange_target(MiddleRole)
   |> should.be_error
 }
 
 pub fn get_exchange_count_test() {
-  scoring.get_exchange_count(Trouduc)
+  scoring.get_exchange_count(BottomRole)
   |> should.equal(2)
 
-  scoring.get_exchange_count(ViceTrouduc)
+  scoring.get_exchange_count(FourthRole)
   |> should.equal(1)
 
-  scoring.get_exchange_count(President)
+  scoring.get_exchange_count(TopRole)
   |> should.equal(2)
 
-  scoring.get_exchange_count(VicePresident)
+  scoring.get_exchange_count(SecondRole)
   |> should.equal(1)
 
-  scoring.get_exchange_count(Neutral)
+  scoring.get_exchange_count(MiddleRole)
   |> should.equal(0)
 }
 
@@ -196,30 +196,30 @@ pub fn has_vice_roles_test() {
 }
 
 pub fn role_hierarchy_value_test() {
-  scoring.role_hierarchy_value(President)
+  scoring.role_hierarchy_value(TopRole)
   |> should.equal(5)
 
-  scoring.role_hierarchy_value(VicePresident)
+  scoring.role_hierarchy_value(SecondRole)
   |> should.equal(4)
 
-  scoring.role_hierarchy_value(Neutral)
+  scoring.role_hierarchy_value(MiddleRole)
   |> should.equal(3)
 
-  scoring.role_hierarchy_value(ViceTrouduc)
+  scoring.role_hierarchy_value(FourthRole)
   |> should.equal(2)
 
-  scoring.role_hierarchy_value(Trouduc)
+  scoring.role_hierarchy_value(BottomRole)
   |> should.equal(1)
 }
 
 pub fn compare_roles_test() {
-  scoring.compare_roles(President, Trouduc)
+  scoring.compare_roles(TopRole, BottomRole)
   |> should.equal(order.Gt)
 
-  scoring.compare_roles(Trouduc, President)
+  scoring.compare_roles(BottomRole, TopRole)
   |> should.equal(order.Lt)
 
-  scoring.compare_roles(Neutral, Neutral)
+  scoring.compare_roles(MiddleRole, MiddleRole)
   |> should.equal(order.Eq)
 }
 

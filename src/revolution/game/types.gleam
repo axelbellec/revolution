@@ -37,12 +37,34 @@ pub type Card {
 }
 
 /// Player role determines card exchange requirements and hierarchy
+/// Roles are position-based (1st place → 5th place) for semantic clarity
 pub type Role {
-  President
-  VicePresident
-  Neutral
-  ViceTrouduc
-  Trouduc
+  TopRole
+  SecondRole
+  MiddleRole
+  FourthRole
+  BottomRole
+}
+
+/// Role display theme for customizing role names
+pub type RoleTheme {
+  PowerTier
+  StarRating
+  Medieval
+  Military
+  Descriptive
+  Classic
+}
+
+/// Custom role labels for fully customizable role names
+pub type RoleLabels {
+  RoleLabels(
+    top: String,
+    second: String,
+    middle: String,
+    fourth: String,
+    bottom: String,
+  )
 }
 
 /// Player connection state with timeout tracking
@@ -115,6 +137,8 @@ pub type GameConfig {
     exchange_timeout_ms: Int,
     disconnect_grace_period_ms: Int,
     turn_timeout_ms: Option(Int),
+    role_theme: RoleTheme,
+    custom_role_labels: Option(RoleLabels),
   )
 }
 
@@ -260,5 +284,96 @@ pub fn default_config() -> GameConfig {
     exchange_timeout_ms: 60_000,
     disconnect_grace_period_ms: 30_000,
     turn_timeout_ms: option.None,
+    role_theme: PowerTier,
+    custom_role_labels: option.None,
   )
+}
+
+/// Convert role to display string based on theme
+pub fn role_to_string(role: Role, theme: RoleTheme) -> String {
+  case theme {
+    PowerTier -> role_to_power_tier(role)
+    StarRating -> role_to_star_rating(role)
+    Medieval -> role_to_medieval(role)
+    Military -> role_to_military(role)
+    Descriptive -> role_to_descriptive(role)
+    Classic -> role_to_classic(role)
+  }
+}
+
+/// Convert role to string with custom labels (overrides theme)
+pub fn role_to_string_custom(role: Role, labels: RoleLabels) -> String {
+  case role {
+    TopRole -> labels.top
+    SecondRole -> labels.second
+    MiddleRole -> labels.middle
+    FourthRole -> labels.fourth
+    BottomRole -> labels.bottom
+  }
+}
+
+/// Power Tier theme: Tier 5 → Tier 1
+fn role_to_power_tier(role: Role) -> String {
+  case role {
+    TopRole -> "Tier 5"
+    SecondRole -> "Tier 4"
+    MiddleRole -> "Tier 3"
+    FourthRole -> "Tier 2"
+    BottomRole -> "Tier 1"
+  }
+}
+
+/// Star Rating theme: 5-Star → 1-Star
+fn role_to_star_rating(role: Role) -> String {
+  case role {
+    TopRole -> "★★★★★"
+    SecondRole -> "★★★★"
+    MiddleRole -> "★★★"
+    FourthRole -> "★★"
+    BottomRole -> "★"
+  }
+}
+
+/// Medieval theme: Monarch → Peasant
+fn role_to_medieval(role: Role) -> String {
+  case role {
+    TopRole -> "Monarch"
+    SecondRole -> "Duke"
+    MiddleRole -> "Knight"
+    FourthRole -> "Squire"
+    BottomRole -> "Peasant"
+  }
+}
+
+/// Military theme: General → Private
+fn role_to_military(role: Role) -> String {
+  case role {
+    TopRole -> "General"
+    SecondRole -> "Colonel"
+    MiddleRole -> "Captain"
+    FourthRole -> "Sergeant"
+    BottomRole -> "Private"
+  }
+}
+
+/// Descriptive theme: 1st Place → Last Place
+fn role_to_descriptive(role: Role) -> String {
+  case role {
+    TopRole -> "1st Place"
+    SecondRole -> "2nd Place"
+    MiddleRole -> "Middle"
+    FourthRole -> "Second-Last"
+    BottomRole -> "Last Place"
+  }
+}
+
+/// Classic theme: President → Trouduc (original names)
+fn role_to_classic(role: Role) -> String {
+  case role {
+    TopRole -> "President"
+    SecondRole -> "Vice-President"
+    MiddleRole -> "Neutral"
+    FourthRole -> "Vice-Trouduc"
+    BottomRole -> "Trouduc"
+  }
 }

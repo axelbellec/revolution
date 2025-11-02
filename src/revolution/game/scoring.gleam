@@ -5,8 +5,8 @@ import gleam/list
 import gleam/option.{None, Some}
 import gleam/order.{type Order}
 import revolution/game/types.{
-  type Player, type Role, Neutral, Player, President, Trouduc, VicePresident,
-  ViceTrouduc,
+  type Player, type Role, BottomRole, FourthRole, MiddleRole, Player, SecondRole,
+  TopRole,
 }
 import revolution/utils/id.{type PlayerId}
 
@@ -25,56 +25,56 @@ pub fn assign_roles(
   }
 }
 
-/// 3 players: President, Neutral, Trouduc
+/// 3 players: Top, Middle, Bottom
 fn assign_roles_3_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Role) {
   case finishing_order {
     [first, second, third] ->
       dict.new()
-      |> dict.insert(first, President)
-      |> dict.insert(second, Neutral)
-      |> dict.insert(third, Trouduc)
+      |> dict.insert(first, TopRole)
+      |> dict.insert(second, MiddleRole)
+      |> dict.insert(third, BottomRole)
     _ -> dict.new()
   }
 }
 
-/// 4 players: President, Neutral, Neutral, Trouduc
+/// 4 players: Top, Middle, Middle, Bottom
 fn assign_roles_4_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Role) {
   case finishing_order {
     [first, second, third, fourth] ->
       dict.new()
-      |> dict.insert(first, President)
-      |> dict.insert(second, Neutral)
-      |> dict.insert(third, Neutral)
-      |> dict.insert(fourth, Trouduc)
+      |> dict.insert(first, TopRole)
+      |> dict.insert(second, MiddleRole)
+      |> dict.insert(third, MiddleRole)
+      |> dict.insert(fourth, BottomRole)
     _ -> dict.new()
   }
 }
 
-/// 5 players: President, Vice-President, Neutral, Vice-Trouduc, Trouduc
+/// 5 players: Top, Second, Middle, Fourth, Bottom
 fn assign_roles_5_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Role) {
   case finishing_order {
     [first, second, third, fourth, fifth] ->
       dict.new()
-      |> dict.insert(first, President)
-      |> dict.insert(second, VicePresident)
-      |> dict.insert(third, Neutral)
-      |> dict.insert(fourth, ViceTrouduc)
-      |> dict.insert(fifth, Trouduc)
+      |> dict.insert(first, TopRole)
+      |> dict.insert(second, SecondRole)
+      |> dict.insert(third, MiddleRole)
+      |> dict.insert(fourth, FourthRole)
+      |> dict.insert(fifth, BottomRole)
     _ -> dict.new()
   }
 }
 
-/// 6 players: President, Vice-President, Neutral, Neutral, Vice-Trouduc, Trouduc
+/// 6 players: Top, Second, Middle, Middle, Fourth, Bottom
 fn assign_roles_6_players(finishing_order: List(PlayerId)) -> Dict(PlayerId, Role) {
   case finishing_order {
     [first, second, third, fourth, fifth, sixth] ->
       dict.new()
-      |> dict.insert(first, President)
-      |> dict.insert(second, VicePresident)
-      |> dict.insert(third, Neutral)
-      |> dict.insert(fourth, Neutral)
-      |> dict.insert(fifth, ViceTrouduc)
-      |> dict.insert(sixth, Trouduc)
+      |> dict.insert(first, TopRole)
+      |> dict.insert(second, SecondRole)
+      |> dict.insert(third, MiddleRole)
+      |> dict.insert(fourth, MiddleRole)
+      |> dict.insert(fifth, FourthRole)
+      |> dict.insert(sixth, BottomRole)
     _ -> dict.new()
   }
 }
@@ -103,8 +103,8 @@ pub fn get_player_role(player: Player) -> Result(Role, Nil) {
 /// Check if a role should give cards (lower hierarchy)
 pub fn should_give_cards(role: Role) -> Bool {
   case role {
-    Trouduc -> True
-    ViceTrouduc -> True
+    BottomRole -> True
+    FourthRole -> True
     _ -> False
   }
 }
@@ -112,8 +112,8 @@ pub fn should_give_cards(role: Role) -> Bool {
 /// Check if a role should receive cards (higher hierarchy)
 pub fn should_receive_cards(role: Role) -> Bool {
   case role {
-    President -> True
-    VicePresident -> True
+    TopRole -> True
+    SecondRole -> True
     _ -> False
   }
 }
@@ -121,8 +121,8 @@ pub fn should_receive_cards(role: Role) -> Bool {
 /// Get the role that should receive cards from this role
 pub fn get_exchange_target(role: Role) -> Result(Role, Nil) {
   case role {
-    Trouduc -> Ok(President)
-    ViceTrouduc -> Ok(VicePresident)
+    BottomRole -> Ok(TopRole)
+    FourthRole -> Ok(SecondRole)
     _ -> Error(Nil)
   }
 }
@@ -130,8 +130,8 @@ pub fn get_exchange_target(role: Role) -> Result(Role, Nil) {
 /// Get the role that should give cards to this role
 pub fn get_exchange_source(role: Role) -> Result(Role, Nil) {
   case role {
-    President -> Ok(Trouduc)
-    VicePresident -> Ok(ViceTrouduc)
+    TopRole -> Ok(BottomRole)
+    SecondRole -> Ok(FourthRole)
     _ -> Error(Nil)
   }
 }
@@ -139,11 +139,11 @@ pub fn get_exchange_source(role: Role) -> Result(Role, Nil) {
 /// Get number of cards to exchange for a role
 pub fn get_exchange_count(role: Role) -> Int {
   case role {
-    Trouduc -> 2
-    ViceTrouduc -> 1
-    President -> 2
-    VicePresident -> 1
-    Neutral -> 0
+    BottomRole -> 2
+    FourthRole -> 1
+    TopRole -> 2
+    SecondRole -> 1
+    MiddleRole -> 0
   }
 }
 
@@ -155,11 +155,11 @@ pub fn has_vice_roles(player_count: Int) -> Bool {
 /// Get role hierarchy value (higher = better position)
 pub fn role_hierarchy_value(role: Role) -> Int {
   case role {
-    President -> 5
-    VicePresident -> 4
-    Neutral -> 3
-    ViceTrouduc -> 2
-    Trouduc -> 1
+    TopRole -> 5
+    SecondRole -> 4
+    MiddleRole -> 3
+    FourthRole -> 2
+    BottomRole -> 1
   }
 }
 
